@@ -10,7 +10,7 @@ public class GroundSpawner : MonoBehaviour
     {
         GameObject newGround = Instantiate(ground);
         newGround.SetActive(true);
-        newGround.transform.position = new Vector3(0, -1, 50);
+        newGround.transform.position = new Vector3(0, -1, 60);
         Destroy(newGround, 15);
     }
 

@@ -26,7 +26,7 @@ public class PlayerController : MonoBehaviour
     {
 
         normZ = getAngleZ();
-        print(normZ);
+        //print(normZ);
         /*if (normZ == 0)
         {
             headCamera.transform.Rotate(0.0f, 0.0f, 0.0f, Space.Self);

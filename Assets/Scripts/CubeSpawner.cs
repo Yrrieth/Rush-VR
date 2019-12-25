@@ -7,7 +7,7 @@ public class CubeSpawner : MonoBehaviour
     public float maxSize;
     public GameObject ground;
     private GameObject cube;
-    public float speed;
+    private float speed = 0.2f;
     private int numberCube;
 
     public float maxTime = 5;
@@ -20,6 +20,7 @@ public class CubeSpawner : MonoBehaviour
     void Start()
     {
         listCubes = new List<GameObject>();
+        playerController = GameObject.Find("Camera Rig").GetComponent<PlayerController>();
 
         // Taille minimale
         if (maxSize < 10)
@@ -34,13 +35,17 @@ public class CubeSpawner : MonoBehaviour
             GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
             listCubes.Add(cube);
 
-            cube.AddComponent<BoxCollider>();
             cube.transform.localScale = new Vector3(10, Random.Range(10, maxSize), 10);
 
             float cubeSizeY = cube.transform.localScale.y;
 
             cube.transform.position = new Vector3(Random.Range(-90, 90), cubeSizeY / 2 - 1, Random.Range(250,300));
             cube.GetComponent<Renderer>().material.color = new Color(Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f));
+
+            cube.AddComponent<BoxCollider>();
+            Collider cubeCollider = cube.GetComponent<Collider>();
+            cubeCollider.isTrigger = true;
+            
             Destroy(cube, 15);
         }   
     }
@@ -56,7 +61,6 @@ public class CubeSpawner : MonoBehaviour
                 GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
                 listCubes.Add(cube);
 
-                cube.AddComponent<BoxCollider>();
                 cube.transform.localScale = new Vector3(10, Random.Range(10, maxSize), 10);
 
                 float cubeSizeY = cube.transform.localScale.y;
@@ -64,21 +68,44 @@ public class CubeSpawner : MonoBehaviour
                 cube.transform.position = new Vector3(Random.Range(-90, 90), cubeSizeY / 2 - 1, Random.Range(250, 300));
                 cube.GetComponent<Renderer>().material.color = new Color(Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f));
 
-                timer = 0;
+                cube.AddComponent<BoxCollider>();
+                Collider cubeCollider = cube.GetComponent<Collider>();
+                cubeCollider.isTrigger = true;
                 Destroy(cube, 15);
+
+                timer = 0;
             }
         }
 
         // Enlève de la liste si le GameObject n'existe plus
         listCubes.RemoveAll(GameObject => GameObject == null);
 
+        speed += (Time.deltaTime * 2 / 100);
         foreach (GameObject cube in listCubes)
         {
-            //float angleZ = playerController.getAngleZ();
-            cube.transform.position += new Vector3(0, 0, -speed); //Vector3(angleZ, 0, -speed);
+            float angleZ = playerController.getAngleZ();
+            print(angleZ);
+            if (angleZ > 10)
+            {
+                cube.transform.position += new Vector3(0.5f, 0, -speed);
+            } else if (angleZ < -10)
+            {
+                cube.transform.position += new Vector3(-0.5f, 0, -speed);
+            } else
+            {
+                cube.transform.position += new Vector3(0, 0, -speed); //Vector3(angleZ, 0, -speed);
+            }
         }
 
         // Incrémente le timer de 1 seconde
         timer += Time.deltaTime;
     }
+
+    /*private void OnTriggerEnter(Collider collision)
+    {
+        if (collision.gameObject.name == "Cube")
+        {
+            Destroy(collision.gameObject);
+        }
+    }*/
 }
