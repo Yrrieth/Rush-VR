@@ -22,9 +22,12 @@ public class GroundSpawner : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        GameObject newGround = Instantiate(ground);
-        newGround.SetActive(true);
-        newGround.transform.position = new Vector3(0, -1, 70);
-        Destroy(newGround, 15);
+        if (other.tag == "Ground")
+        {
+            GameObject newGround = Instantiate(ground);
+            newGround.SetActive(true);
+            newGround.transform.position = new Vector3(0, -1, 70);
+            Destroy(newGround, 15);
+        }
     }
 }
